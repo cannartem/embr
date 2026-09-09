@@ -2054,6 +2054,13 @@
           min-height: auto;
           padding: 28px 40px 32px;
         }
+        /* dvh mirrors the browser chrome mobile Safari/Chrome are actually
+ showing at paint time - plain vh is fixed to the chrome-collapsed
+ (tallest) viewport, so on first load, with the address bar still
+ expanded, 28vh/26vh below were sized against room that wasn't
+ actually there yet and the cube's lower faces ran under the fold.
+ Declared after the vh version so unsupported browsers keep that
+ value; dvh overrides it everywhere else. */
         .hero-grid {
           grid-template-columns: 1fr;
           gap: 24px;
@@ -2061,10 +2068,12 @@
         .hero-illus {
           min-height: 0;
           height: min(280px, 28vh);
+          height: min(280px, 28dvh);
           grid-column: 1;
         }
         .cube {
           --size: min(300px, 80vw, 26vh);
+          --size: min(300px, 80vw, 26dvh);
         }
         .hero-foot {
           margin-top: 28px;
@@ -2138,9 +2147,11 @@
         }
         .hero-illus {
           height: min(280px, 24vh);
+          height: min(280px, 24dvh);
         }
         .cube {
           --size: min(300px, 80vw, 22vh);
+          --size: min(300px, 80vw, 22dvh);
         }
         .hero-foot {
           margin-top: 20px;
