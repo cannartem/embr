@@ -99,27 +99,6 @@
         scroll-behavior: smooth;
         /* page is dark-first, so UA chrome (scrollbars, form controls) should match */
         color-scheme: dark;
-        /* proximity not mandatory: Ritual/Proof run taller than the viewport, so mandatory snap would trap the reader mid-section */
-        scroll-snap-type: y proximity;
-      }
-      /* snap points at each section top; scroll-padding matches the sticky nav, same offset as the anchor scroll-margin */
-      html {
-        scroll-padding-top: 96px;
-      }
-      section.hero,
-      section.ritual,
-      section.proof,
-      section.faq,
-      section.cta {
-        scroll-snap-align: start;
-        /* normal not always, so a fast flick through the page isn't caught at every section */
-        scroll-snap-stop: normal;
-      }
-      /* snap is an animated correction, so it goes off with the other motion under prefers-reduced-motion */
-      @media (prefers-reduced-motion: reduce) {
-        html {
-          scroll-snap-type: none;
-        }
       }
       /* Anchor targets sit under the sticky nav without this. */
       section[id],
