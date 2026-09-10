@@ -75,9 +75,9 @@
         /* one token instead of the stack repeated across 15 headline rules; the point is the :lang(fr) override below has one value to change */
         --font-display: "Machine", Impact, Helvetica, sans-serif;
       }
-      /* French: Machine has no accented glyphs, so for :lang(fr) the display face falls back to a condensed heavy face; body text keeps Konstant */
+      /* French: Machine has no accented glyphs, so :lang(fr) headlines use DIN Condensed - an installed industrial condensed face with full Latin-1, closer to Machine's character than a plain narrow grotesque; body text keeps Konstant */
       :root:lang(fr) {
-        --font-display: "Avenir Next Condensed", Impact, "Arial Narrow", sans-serif;
+        --font-display: "DIN Condensed", "Helvetica Neue Condensed", "Arial Narrow", sans-serif;
       }
 
       /* French runs 15-25% longer - hero went 2 lines to 4, FAQ head 1 to 2; these bring the block heights back */
@@ -3043,15 +3043,13 @@ const I18N = {
         coaSyncA11y();
       }
 
-      // Cube: 2D drag (X+Y), snap to nearest 90° on release. Detect which
-      // face is now front-facing, push its brand color into --hero-bg so the
-      // whole hero background repaints to match. Standard CSS 3D transform
-      // technique - preserve-3d container plus per-face translateZ.
+      // Cube: free-spin drag using DOMMatrix in CSS's own coordinate
+      // space, so it turns in every direction. The old Euler rx/ry pair
+      // gimbal-locked at the poles - once Bath or Chew faced you, a
+      // sideways drag only spun that face in place. On release it snaps to
+      // the nearest face, always upright, so a face never shows inverted.
       const cube = document.getElementById("cube");
-      // Shared across drag, card-hover, and scroll-sync below: whichever of
-      // them last took control of the cube's rotation can cancel or
-      // (re)schedule the return to auto-spin, instead of each interaction
-      // managing its own timer and fighting the others.
+
       let resumeSpinTimer = null;
       function scheduleSpinResume(delay) {
         clearTimeout(resumeSpinTimer);
@@ -3059,52 +3057,88 @@ const I18N = {
           if (cube) cube.classList.add("spinning");
         }, delay);
       }
+
+      // Transform that brings each face forward and upright (verified
+      // visually - these are the exact CSS rotations each face needs).
+      const FACE_MATRIX = {
+        front: new DOMMatrix(),
+        back: new DOMMatrix().rotateAxisAngle(0, 1, 0, 180),
+        right: new DOMMatrix().rotateAxisAngle(0, 1, 0, -90),
+        left: new DOMMatrix().rotateAxisAngle(0, 1, 0, 90),
+        top: new DOMMatrix().rotateAxisAngle(1, 0, 0, -90),
+        bottom: new DOMMatrix().rotateAxisAngle(1, 0, 0, 90),
+      };
+      // Each face's outward normal in the cube's own space.
+      const FACE_NORMAL = {
+        front: [0, 0, 1],
+        back: [0, 0, -1],
+        right: [1, 0, 0],
+        left: [-1, 0, 0],
+        top: [0, -1, 0],
+        bottom: [0, 1, 0],
+      };
+      const FACE_OF_PRODUCT = {
+        drops: "front",
+        mist: "right",
+        roll: "back",
+        balm: "left",
+        chew: "top",
+        bath: "bottom",
+      };
+      const FACE_COLOR = {
+        front: "#9c2914",
+        right: "#0e4b54",
+        back: "#1c1430",
+        left: "#613510",
+        top: "#81272f",
+        bottom: "#182742",
+      };
+      // Whichever face normal, once rotated by the current matrix, points
+      // most toward the viewer (+Z in CSS space).
+      function nearestFace(mat) {
+        let best = "front",
+          bestZ = -Infinity;
+        for (const f in FACE_NORMAL) {
+          const [x, y, z] = FACE_NORMAL[f];
+          const p = mat.transformPoint(new DOMPoint(x, y, z, 0));
+          if (p.z > bestZ) {
+            bestZ = p.z;
+            best = f;
+          }
+        }
+        return best;
+      }
+
       if (cube) {
+        const hero = document.querySelector(".hero");
+        let mat = new DOMMatrix();
+        let matStart = mat;
         let dragging = false,
           moved = false;
         let startX = 0,
-          startY = 0,
-          startRY = -20,
-          startRX = -16;
-        let ry = -20,
-          rx = -16;
-        const hero = document.querySelector(".hero");
+          startY = 0;
+        const SENS = 0.5; // degrees of rotation per pixel dragged
 
-        // Map from snapped (rx, ry) rotation to face - computed once per
-        // cube geometry: face-front is (0,0), rotate Y +90 shows -left etc.
-        // Keys are the normalized (rx%360, ry%360) pair.
-        function normalizeAngle(a) {
-          let n = a % 360;
-          if (n < 0) n += 360;
-          return n;
+        function apply(anim) {
+          cube.style.transition = anim
+            ? "transform 0.5s cubic-bezier(0.22, 0.9, 0.25, 1)"
+            : "none";
+          cube.style.transform = mat.toString();
         }
-        function faceAt(rxDeg, ryDeg) {
-          const x = normalizeAngle(rxDeg);
-          const y = normalizeAngle(ryDeg);
-          // top/bottom take priority when rx is at 90 or 270
-          if (x === 90 || x === 270) return x === 90 ? "bottom" : "top";
-          // otherwise Y rotation picks the visible side
-          // (cube rotates opposite to face translateZ: rotating +90 on Y brings the -90 face forward)
-          if (y === 0) return "front";
-          if (y === 90) return "left";
-          if (y === 180) return "back";
-          if (y === 270) return "right";
-          return "front";
-        }
-        const faceColors = {
-          front: "#9c2914",
-          right: "#0e4b54",
-          back: "#1c1430",
-          left: "#613510",
-          top: "#81272f",
-          bottom: "#182742",
-        };
+        apply(false);
 
-        function setRotation(rxDeg, ryDeg) {
-          cube.style.setProperty("--cube-x", rxDeg + "deg");
-          cube.style.setProperty("--cube-y", ryDeg + "deg");
+        // Point one product's face at the viewer - used by the ritual
+        // hover link and the scroll-center sync below.
+        function cubeSetFace(product) {
+          const face = FACE_OF_PRODUCT[product];
+          if (!face) return;
+          clearTimeout(resumeSpinTimer);
+          cube.classList.remove("spinning");
+          mat = DOMMatrix.fromMatrix(FACE_MATRIX[face]);
+          apply(true);
+          if (hero) hero.style.setProperty("--hero-bg", FACE_COLOR[face]);
         }
-        setRotation(rx, ry);
+        window.cubeSetFace = cubeSetFace;
 
         function onDown(e) {
           dragging = true;
@@ -3115,8 +3149,7 @@ const I18N = {
           const pt = e.touches ? e.touches[0] : e;
           startX = pt.clientX;
           startY = pt.clientY;
-          startRY = ry;
-          startRX = rx;
+          matStart = mat;
           if (!e.touches) e.preventDefault();
         }
         function onMove(e) {
@@ -3125,25 +3158,24 @@ const I18N = {
           const dx = pt.clientX - startX;
           const dy = pt.clientY - startY;
           if (Math.abs(dx) + Math.abs(dy) > 4) moved = true;
-          ry = startRY + dx * 0.6;
-          rx = Math.max(-90, Math.min(90, startRX - dy * 0.6));
-          setRotation(rx, ry);
+          // Pre-multiplied world-axis rotations: a horizontal drag always
+          // spins about the screen's vertical axis and a vertical drag
+          // about the horizontal one, whatever the cube's current pose -
+          // so there's no pole for it to get stuck at.
+          const delta = new DOMMatrix()
+            .rotateAxisAngle(0, 1, 0, dx * SENS)
+            .rotateAxisAngle(1, 0, 0, -dy * SENS);
+          mat = delta.multiply(matStart);
+          apply(false);
         }
         function onUp() {
           if (!dragging) return;
           dragging = false;
           cube.classList.remove("dragging");
-          // Snap to nearest face
-          ry = Math.round(ry / 90) * 90;
-          rx = Math.round(rx / 90) * 90;
-          setRotation(rx, ry);
-          const currentFace = faceAt(rx, ry);
-          if (hero && faceColors[currentFace]) {
-            hero.style.setProperty("--hero-bg", faceColors[currentFace]);
-          }
-          // Left alone for a few seconds after a drag, the cube goes back
-          // to auto-spinning instead of sitting frozen on whatever face
-          // the user happened to release it on.
+          const face = nearestFace(mat);
+          mat = DOMMatrix.fromMatrix(FACE_MATRIX[face]);
+          apply(true);
+          if (hero) hero.style.setProperty("--hero-bg", FACE_COLOR[face]);
           scheduleSpinResume(2600);
         }
         cube.addEventListener("mousedown", onDown);
@@ -3153,59 +3185,33 @@ const I18N = {
         window.addEventListener("mouseup", onUp);
         window.addEventListener("touchend", onUp);
 
-        // A clean click (no drag) jumps straight to that product instead of
-        // just the top of the ritual section: the flagship's own element if
-        // it's Drops, or its row in the quiet list otherwise. Briefly rings
-        // the target so landing there reads as "you asked for this", not
-        // just a page jump.
+        // Clean click (no drag) jumps to that product in the ritual grid.
         cube.querySelectorAll(".face").forEach((face) => {
           face.addEventListener("click", (e) => {
             e.preventDefault();
             if (moved) return;
-            const target = document.getElementById("ritual-" + face.dataset.product);
+            const target = document.getElementById(
+              "ritual-" + face.dataset.product,
+            );
             if (!target) return;
             target.scrollIntoView({ behavior: "smooth", block: "center" });
             target.classList.add("is-targeted");
-            window.setTimeout(() => target.classList.remove("is-targeted"), 1600);
+            window.setTimeout(
+              () => target.classList.remove("is-targeted"),
+              1600,
+            );
           });
         });
       }
 
       // Bidirectional link: hover a ritual card, cube rotates to that
-      // product's face. Uses the exact same (rx, ry) mapping the cube's
-      // face-detection code uses, in reverse. When the pointer leaves the
-      // ritual grid entirely, the cube resumes auto-spin.
+      // product's face. When the pointer leaves the ritual grid entirely,
+      // the cube resumes auto-spin.
       const ritualGrid = document.getElementById("ritualGrid");
-      const cardToRotation = {
-        drops: { rx: 0, ry: 0 }, // front
-        mist: { rx: 0, ry: 270 }, // right face, cube rotated -90deg on Y
-        roll: { rx: 0, ry: 180 }, // back
-        balm: { rx: 0, ry: 90 }, // left face
-        chew: { rx: -90, ry: 0 }, // top face, cube rotated +90deg on X (down)
-        bath: { rx: 90, ry: 0 }, // bottom face
-      };
       if (cube && ritualGrid) {
         ritualGrid.querySelectorAll(".p-flagship, .p-row").forEach((card) => {
           card.addEventListener("mouseenter", () => {
-            const target = cardToRotation[card.dataset.product];
-            if (!target) return;
-            clearTimeout(resumeSpinTimer);
-            cube.classList.remove("spinning");
-            cube.style.setProperty("--cube-x", target.rx + "deg");
-            cube.style.setProperty("--cube-y", target.ry + "deg");
-            // Also flip the hero background to that face's color
-            const hero = document.querySelector(".hero");
-            const heroColors = {
-              drops: "#9c2914",
-              mist: "#0e4b54",
-              roll: "#1c1430",
-              balm: "#613510",
-              chew: "#81272f",
-              bath: "#182742",
-            };
-            if (hero && heroColors[card.dataset.product]) {
-              hero.style.setProperty("--hero-bg", heroColors[card.dataset.product]);
-            }
+            window.cubeSetFace && window.cubeSetFace(card.dataset.product);
           });
         });
         // Resume auto-spin when pointer fully leaves the grid
@@ -3242,18 +3248,8 @@ const I18N = {
         );
         stickyIO.observe(ritual);
 
-        // As each ritual card crosses viewport center, rotate cube + repaint
-        // hero bg to that product's face. Reuses the same rotation map the
-        // hover behavior uses, so behavior stays consistent.
-        const heroBg = document.querySelector(".hero");
-        const heroColors = {
-          drops: "#9c2914",
-          mist: "#0e4b54",
-          roll: "#1c1430",
-          balm: "#613510",
-          chew: "#81272f",
-          bath: "#182742",
-        };
+        // As each ritual card crosses viewport center, turn the cube to
+        // that product's face and repaint the hero background to match.
         const cardIO = new IntersectionObserver(
           (entries) => {
             // Pick the card with the largest intersection ratio - the one most
@@ -3267,16 +3263,7 @@ const I18N = {
               }
             });
             if (!best) return;
-            const product = best.target.dataset.product;
-            const target = cardToRotation[product];
-            if (!target) return;
-            clearTimeout(resumeSpinTimer);
-            cube.classList.remove("spinning");
-            cube.style.setProperty("--cube-x", target.rx + "deg");
-            cube.style.setProperty("--cube-y", target.ry + "deg");
-            if (heroBg && heroColors[product]) {
-              heroBg.style.setProperty("--hero-bg", heroColors[product]);
-            }
+            window.cubeSetFace && window.cubeSetFace(best.target.dataset.product);
           },
           { threshold: [0.3, 0.6, 0.9], rootMargin: "-30% 0px -30% 0px" },
         );
