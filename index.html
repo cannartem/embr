@@ -3,8 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Matches the section the browser chrome actually sits against (nav is
- --ink), so mobile Safari/Chrome don't paint a mismatched bar above it. -->
+    <!-- matches the nav colour so mobile browser chrome doesn't paint a mismatched bar -->
     <meta name="theme-color" content="#282a71" />
     <meta
       name="description"
@@ -12,20 +11,13 @@
     />
     <title>EMBR: Slow-Release Botanicals</title>
 
-    <!-- Favicon as an inline SVG so the page stays a single file: ink ground,
- cream E, the same two colours the wordmark runs on. Geometric rather than
- typeset - Machine is a licensed local face and would not render for anyone
- else, and at 16px a display face is unreadable anyway. -->
+    <!-- inline SVG so the page stays one file; geometric E because Machine is a local-only face and unreadable at 16px anyway -->
     <link
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23282a71'/%3E%3Cg fill='%23f4f5f7'%3E%3Crect x='10' y='8' width='3.6' height='16'/%3E%3Crect x='10' y='8' width='12' height='3.5'/%3E%3Crect x='10' y='14.3' width='9.6' height='3.2'/%3E%3Crect x='10' y='20.5' width='12' height='3.5'/%3E%3C/g%3E%3C/svg%3E"
     />
 
-    <!-- Link previews. Without these the site posts as a blank grey card
- everywhere it gets shared, which is most of where a launch actually
- travels. og:image must be an absolute URL once this sits on the real
- domain - relative paths resolve on some scrapers and silently fail on
- others (LinkedIn among them). -->
+    <!-- without these the shared link is a blank grey card; make og:image absolute once on the real domain -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="EMBR" />
     <meta property="og:title" content="EMBR: Slow-Release Botanicals" />
@@ -48,105 +40,47 @@
     <meta name="twitter:image" content="assets/og.jpg" />
     <style>
       :root {
-        /* Was #211712, an unrelated warm brown-black with no stated reason -
- a generic "dark reads premium" default. First fix derived it from
- --midnight's own hue (h218), but 218 is exactly generic-SaaS-blue
- territory (Twitter/LinkedIn/Facebook all sit within a few degrees of
- it) - technically justified, still read as a stock color. Shifted to
- h238: the actual midpoint between --midnight (h218, Bath) and --plum
- (h262, Roll), not a copy of either, still the same "cool half of the
- day-arc" reasoning, just landing somewhere neither SaaS-default nor
- already claimed by another SKU. Cream against it clears 11.6:1. */
+        /* h238 = midpoint between --midnight (h218) and --plum (h262), avoiding generic SaaS-blue; cream on it clears 11.6:1 */
         --ink: #282a71;
         --red: #c8371c;
         --red-deep: #9c2914;
         --ember: #ff7a3d;
-        /* Same darkening ratio (~0.6x lightness, same hue/sat) used to
- derive every other "-deep" token from its bright pair - ember never
- got one earlier because every previous fix for it just swapped to
- cream instead. Needed here as an accent-deep for a light-mode FAQ
- tile border/stat color: 5.02:1 on cream. */
+        /* accent-deep for ember, same ~0.6x darkening as the other -deep tokens; 5.02:1 on cream */
         --ember-deep: #be3c00;
-        /* Cool-tinted white, not a warm cream: the brand palette splits into
-           a warm half (red/amber/coral) and a cool half (teal/plum/midnight),
-           so the one constant text/highlight color sits neutrally between
-           them rather than siding with the warm half by being cream. */
+        /* cool-tinted white so the one constant text colour sits neutral between the warm and cool halves of the palette */
         --cream: #f4f5f7;
-        /* Solid --cream directly against --plum-deep measures 16.15:1 -
- nowhere near an accessibility problem, but a near-white this bright
- against a saturated dark violet reads as an "acid" clash (simultaneous
- contrast, not a contrast-ratio problem - the fix isn't more transparency,
- which just muddies toward grey against whatever's behind it; it's a
- different, still fully solid color). Same violet family as --plum
- itself (h262) at high lightness/low saturation: still unmistakably
- "cream", just not fighting the panel it sits on. Used only where text
- sits directly on --plum/--plum-deep (Proof section). */
+        /* solid near-white on --plum-deep reads as an acid clash (simultaneous contrast); this is a calmer solid cream, used only on --plum surfaces */
         --cream-on-plum: #e5e2e9;
-        /* Six-product palette, one color per face. Each color is a full-fat
- saturated brand color, not a tint, so switching between them by
- spinning the cube feels like actually moving through the line, not
- shuffling shades of one hue. */
+        /* one saturated colour per cube face - full-fat, not tints, so spinning through them feels like moving through the line */
         --red-flagship: #c8371c;
         --teal: #146b77;
         --teal-deep: #0e4b54;
         --plum: #2a1f3d;
         --plum-deep: #1c1430;
         --amber: #a2591b; /* Balm - after-workout, warm resin */
-        --coral: #c33c48; /* Chew - instant, portable. Darkened from the
-        original #c94f5a: that version only hit 4.05:1 contrast against
-        cream text (fails the 4.5:1 body-text minimum on the cube face and
-        the Chew card panel). This clears 4.74:1, same hue and chroma. */
-        /* Both amber and coral are too light at full strength to hold small
- body text at 4.5:1 (solid cream only reaches 4.84 / 4.05). These deep
- variants are for text panels specifically; the bright originals stay
- for large Machine-face type and photo tints, which only need 3:1. */
+        --coral: #c33c48; /* darkened from #c94f5a which only hit 4.05:1 on cream; this clears 4.74:1, same hue/chroma */
+        /* amber/coral are too light for small body text at 4.5:1; these deep variants are for text panels, brights stay for large type and photo tints */
         --amber-deep: #613510;
         --coral-deep: #81272f;
         --midnight: #182742; /* Bath - night, deep soak */
-        /* Page went dark: cream used to be the surface color everywhere
- (nav, ritual, faq, cta), now it's only ever a text/line color on
- top of --ink. --line is redefined to the light-on-dark rgba so
- every existing border/rule reference repaints correctly without
- hunting down each call site. */
+        /* page went dark: cream is now only a text/line colour on --ink, so --line becomes the light-on-dark rgba and every border repaints correctly */
         --line: rgba(244, 245, 247, 0.14);
-        /* Divider color for the light-mode sections below (Ritual/FAQ/
- footer): ink-based instead of cream-based, same role as --line but for
- a light surface. */
+        /* divider for the light-mode sections (Ritual/FAQ/footer): ink-based counterpart to --line */
         --ink-line: rgba(40, 42, 113, 0.16);
         --ease: cubic-bezier(0.22, 0.9, 0.25, 1);
 
-        /* One measure for every section's content. Ritual, Proof and FAQ
- each carried their own width (1360 / 1240 / 1160 of content), so the
- left edge of the page stepped inward three times on the way down - and
- because the two light sections put that cap on the section box itself,
- background and all, the dark page background showed through beside
- them as a stray strip on any window wider than the cap. Backgrounds
- now run edge to edge and only the content is held to this one value. */
+        /* one content width for every section - the three old widths stepped the left edge inward and leaked the dark bg beside the light sections */
         --measure: 1240px;
 
-        /* One token instead of repeating this stack across every headline
- rule (15 of them) - the reason it needs to be a variable, not just less
- typing, is the :lang(fr) override right below: it only has one value to
- change instead of 15. */
+        /* one token instead of the stack repeated across 15 headline rules; the point is the :lang(fr) override below has one value to change */
         --font-display: "Machine", Impact, Helvetica, sans-serif;
       }
-      /* French: Machine (the licensed display face, referenced by name and
- never embedded) has no accented glyphs - é/è/à render as gaps mid-word.
- Writing French without its own accents reads as broken to a native
- speaker, so for that locale only the display face steps aside. The
- replacement is condensed and heavy rather than a plain grotesque:
- the layout is built around narrow all-caps headlines and a normal-width
- fallback doubles their line count. Konstant Grotesk Book keeps running
- the body text - a text face carries Latin-1, the gaps were only ever in
- the display face. */
+      /* French: Machine has no accented glyphs, so for :lang(fr) the display face falls back to a condensed heavy face; body text keeps Konstant */
       :root:lang(fr) {
         --font-display: "Avenir Next Condensed", Impact, "Arial Narrow", sans-serif;
       }
 
-      /* French runs 15-25% longer than the English it was set to. At the
- same size the hero went from two lines to four and the FAQ head from
- one to two, which is what read as "headings too big" - it was the line
- count, not the type size. These bring the block heights back in line. */
+      /* French runs 15-25% longer - hero went 2 lines to 4, FAQ head 1 to 2; these bring the block heights back */
       :lang(fr) .hero h1 {
         font-size: clamp(44px, 7.4vw, 108px);
       }
@@ -163,21 +97,12 @@
       }
       html {
         scroll-behavior: smooth;
-        /* The page is dark-first (hero/proof/cta), so form controls,
- scrollbars and any UA-drawn chrome should match rather than render
- as light widgets on a dark ground. */
+        /* page is dark-first, so UA chrome (scrollbars, form controls) should match */
         color-scheme: dark;
-        /* proximity, not mandatory: sections are of very different heights
- (Ritual and Proof each run taller than the viewport), so a mandatory
- snap would trap the reader mid-section and force big scroll gestures
- to escape. proximity only pulls in when the user has already stopped
- near a section edge, which is the "inertia into the next block" feel
- without fighting normal reading. */
+        /* proximity not mandatory: Ritual/Proof run taller than the viewport, so mandatory snap would trap the reader mid-section */
         scroll-snap-type: y proximity;
       }
-      /* Snap points sit at the top of each section. scroll-padding matches
- the sticky nav so a snapped section clears it, same offset used by the
- anchor scroll-margin above. */
+      /* snap points at each section top; scroll-padding matches the sticky nav, same offset as the anchor scroll-margin */
       html {
         scroll-padding-top: 96px;
       }
@@ -187,13 +112,10 @@
       section.faq,
       section.cta {
         scroll-snap-align: start;
-        /* normal, not always: a section already snapped past shouldn't
- re-trap the scroll on a fast flick through the middle of the page. */
+        /* normal not always, so a fast flick through the page isn't caught at every section */
         scroll-snap-stop: normal;
       }
-      /* Reduced-motion respects the intent - the whole point of snap is
- an animated correction, so if the user's OS asks for less motion,
- the snap goes with the smooth-scroll and the transitions. */
+      /* snap is an animated correction, so it goes off with the other motion under prefers-reduced-motion */
       @media (prefers-reduced-motion: reduce) {
         html {
           scroll-snap-type: none;
@@ -204,8 +126,7 @@
       [id^="ritual-"] {
         scroll-margin-top: 96px;
       }
-      /* Keyboard users land on the nav first and would otherwise tab through
- it on every page section. Off-screen until focused. */
+      /* keyboard users land on the nav first; off-screen until focused */
       .skip-link {
         position: fixed;
         top: 8px;
@@ -221,20 +142,8 @@
       .skip-link:focus-visible {
         transform: translateY(0);
       }
-      /* Machine for display, Neue Konstant Grotesk for body: both fonts the
- user actually owns, neither from the current indie-Google-Fonts
- rotation. Machine is rough and heavy on purpose (headlines only, it's
- unreadable at paragraph size) paired against NKG's clean, rounded,
- quiet grotesk for running copy, texture vs. neutrality instead of one
- face trying to do both jobs. No @font-face for either: both render
- correctly only where actually installed (this machine), and fall back
- to a plain system sans elsewhere rather than embedding a licensed
- font file into a page meant to be shared. */
-      /* One focus ring for everything interactive. The page alternates light
- and dark sections, so a single-color ring is invisible in half of them -
- this draws two: ink against the light sections, cream against the dark
- ones. Zero-specificity :where() so any element with its own designed
- focus style still wins. */
+      /* Machine (display, headlines only) + Konstant Grotesk (body) - both locally owned, no @font-face, plain system fallback elsewhere */
+      /* one focus ring for everything: draws ink on light sections and cream on dark ones; zero-specificity :where() so bespoke focus styles still win */
       :where(a, button, input, [tabindex]):focus-visible {
         outline: 2px solid var(--cream);
         outline-offset: 2px;
@@ -244,8 +153,7 @@
       body {
         background: var(--ink);
         color: var(--cream);
-        /* Guideline: kills the 300ms tap delay and the default grey tap
- flash on touch, both of which read as lag on a site this animated. */
+        /* kills the 300ms tap delay and grey tap flash, both read as lag on a site this animated */
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
         font-family:
@@ -261,14 +169,7 @@
       .display {
         font-family: var(--font-display);
         font-weight: 700;
-        /* Machine's own default tracking is tight (it's a condensed
- industrial face) - never an issue on the dark sections since light
- text on a dark ground optically bleeds outward a little (irradiation),
- but the same tracking on dark ink over a light card reads visibly
- denser. One shared fix on the base class instead of patching each
- headline class separately. Bumped from 0.02 to 0.035 for readability -
- still reads as the same condensed face, just not fighting itself at
- the joins between letters. */
+        /* Machine's default tracking is tight and reads dense as dark ink on light cards; one shared bump to 0.035 on the base class */
         letter-spacing: 0.035em;
       }
 
@@ -350,19 +251,14 @@
         color: rgba(244, 245, 247, 0.6);
         cursor: pointer;
       }
-      /* The inactive language still has to read as a real, clickable
- control, not a label - 0.6 alpha clears 5.19:1 on --ink, comfortably
- past the 4.5:1 floor rather than fading into pure decoration. */
+      /* inactive language still has to read as a clickable control - 0.6 alpha clears 5.19:1 on --ink */
       .lang-btn[aria-pressed="true"] {
         color: var(--cream);
         font-weight: 700;
         cursor: default;
       }
 
-      /* Hamburger toggle, hidden on desktop where .navlinks already shows
- the four links directly. Two bars, not three: EMBR only has four
- destinations, a two-line glyph reads plainly as "menu" without
- borrowing the fuller three-bar mark from apps with deeper nav trees. */
+      /* hamburger, hidden on desktop; two bars not three because EMBR has only four destinations */
       .nav-burger {
         display: none;
         flex-direction: column;
@@ -415,9 +311,7 @@
       .mobile-nav a:last-child {
         border-bottom: none;
       }
-      /* 18px was below the 24x24 minimum target and it wasn't even a button -
- a plain span with a hardcoded 0. Now a real control: 40x40 hit area with
- the counter drawn at its old size inside it. */
+      /* was an 18px span with a hardcoded 0; now a real 40x40 control with the counter drawn at its old size inside */
       .bagdot {
         width: 40px;
         height: 40px;
@@ -477,10 +371,7 @@
       .cart-panel.open {
         transform: translateX(0);
       }
-      /* The [hidden] attribute sets display:none through the UA sheet, which
- any author `display` declaration outranks - .cart-panel's own
- display:flex was silently winning, so the drawer rendered open on load
- and ignored every close. Explicit and specific enough to actually hold. */
+      /* [hidden] sets display:none via the UA sheet which author display outranks, so .cart-panel rendered open on load; this is specific enough to hold */
       .cart-panel[hidden],
       .cart-scrim[hidden] {
         display: none;
@@ -590,10 +481,7 @@
         color: rgba(40, 42, 113, 0.7);
         margin: 0;
       }
-      /* The empty state used to just name the section ("Pick a format from
- The Ritual") without a way to get there - a dead end dressed as
- guidance. Underlined + full ink-red so it doesn't read as more of the
- same muted copy around it (4.79:1 on the panel's white, clears 4.5). */
+      /* empty state used to name the section with no way to get there; underlined ink-red so it doesn't read as more muted copy (4.79:1) */
       .cart-empty-link {
         color: var(--red);
         text-decoration: underline;
@@ -637,8 +525,7 @@
       .cart-checkout:disabled:hover {
         background: var(--ink);
       }
-      /* Empty until the checkout button reports into it, so it takes no
- vertical space in the drawer's normal state. */
+      /* empty until the checkout button writes into it, so it takes no space in the drawer's normal state */
       .cart-status {
         margin: 0;
         font-size: 12px;
@@ -649,9 +536,7 @@
       }
 
       /* ---------- HERO ---------- */
-      /* Saturated red fill, not an accent dab: the "contrast" pillar means bold
- color blocking between whole sections (cream nav -> loud red hero ->
- cream ritual -> ink proof), not a muted page with a red button. */
+      /* saturated fill, not an accent dab - the contrast pillar means whole-section colour blocking */
       .hero {
         min-height: 92vh;
         display: flex;
@@ -661,11 +546,7 @@
         overflow: hidden;
         background: var(--red);
       }
-      /* Hero is drawn, not photographed: an SVG dropper + falling droplet
- lives on the right, an oversized outline wordmark "EMBR" sits behind
- the headline. Vector art dodges the stock-photo/isolated-render
- problem entirely - it's rendered by the browser, matches the color
- field exactly, and animates precisely (the droplet actually falls). */
+      /* hero is drawn, not photographed: SVG dropper + falling droplet, outline wordmark behind the headline - dodges the stock-render problem */
       .hero {
         position: relative;
       }
@@ -687,12 +568,7 @@
         margin: 0 0 40px;
       }
 
-      /* Six-face product cube. Auto-rotates on load, drag in any direction
- to spin freely (X + Y), snaps to the nearest face on release,
- click the front face to jump to that product in the ritual grid.
- Each face carries its own inline SVG illustration and its own
- saturated brand color - the cube IS the product selector, not a
- decorative widget over one. */
+      /* six-face product cube: auto-rotates, drag to spin, snaps to nearest face, click front face to jump to that product - it IS the selector */
       .hero-illus {
         position: relative;
         grid-column: 2;
@@ -719,10 +595,7 @@
         transition: none;
         cursor: grabbing;
       }
-      /* Floating state - cube leaves its natural position in the hero grid
- and pins to the top-right of the viewport while the user is scrolling
- through the ritual section. Smaller size so it doesn't dominate over
- the product cards being read. */
+      /* floating state: cube leaves the grid and pins top-right while scrolling the ritual section, smaller so it doesn't dominate the cards */
       .cube.is-floating {
         --size: min(280px, 24vw);
         position: fixed;
@@ -784,10 +657,7 @@
         font-size: 13px;
         color: rgba(244, 245, 247, 0.8);
       }
-      /* Face photo replaces the previous SVG illustration. Filled with a
- stock cannabis/CBD product shot per product, tinted with the face's
- brand color through a mix-blend-mode overlay so third-party labels
- on the source photos read as texture rather than as brand names. */
+      /* face photo per product, tinted with the face's brand colour via mix-blend so third-party labels read as texture not brand names */
       .face-photo {
         position: absolute;
         inset: 0;
@@ -853,13 +723,9 @@
         letter-spacing: 0.035em;
       }
 
-      /* Hero color reacts to the current front face - this variable is written
- by JS in the cube snap handler; the transition makes the whole hero
- scene shift color when the cube stops on a different product. */
+      /* hero colour follows the front face - JS writes this var in the cube snap handler; the transition shifts the whole scene */
       .hero {
-        /* Default and every JS-set value are the *-deep panel colors, not
- the bright originals: coral/amber/red at full brightness fail 4.5:1
- against cream even at 100% opacity, verified per-hex. */
+        /* always the *-deep panel colours: bright coral/amber/red fail 4.5:1 on cream even at full opacity */
         background: var(--hero-bg, var(--red-deep));
         transition: background 900ms cubic-bezier(0.22, 0.9, 0.25, 1);
       }
@@ -873,9 +739,7 @@
           transition: none;
         }
       }
-      /* Weight is the entire device here: HEAVY carries the literal weight of
- "heavy day", LIGHT is rendered as stroke-only (hollow) to mean exactly
- what it says. No color trick, no arbitrary accent word. */
+      /* HEAVY carries literal weight, LIGHT is stroke-only to mean what it says - no colour trick, no arbitrary accent word */
       .hero h1 .heavy {
         font-weight: 700;
         display: block;
@@ -938,22 +802,15 @@
         color: var(--red);
       }
 
-      /* ---------- RITUAL / PRODUCTS (asymmetric: Drops is the flagship SKU,
- so it gets the larger cell instead of three identical boxes) ---------- */
+      /* ---------- RITUAL / PRODUCTS (asymmetric: Drops is the flagship, so it gets the larger cell) ---------- */
       .ritual {
-        /* This section switches to the light half of the palette
- entirely; see the note on .p-flagship below for how the per-product
- accent carries the brand color once the background stops doing it. */
+        /* section switches to the light half of the palette; per-product accent carries the brand colour once the bg stops */
         background: var(--cream);
-        /* Side padding grows with the window instead of a max-width on the
- box: the cream keeps filling the screen, the content still stops at
- --measure. Below 1320px it collapses to the same flat 40px as before. */
+        /* side padding grows with the window instead of a max-width on the box; content still stops at --measure */
         padding: 140px max(40px, (100% - var(--measure)) / 2) 120px;
       }
 
-      /* Two-column editorial header - index range on the left, lede on the
- right. Reads as a magazine department opener, not a product-page
- "featured products" strip. */
+      /* two-column editorial header - index range left, lede right; reads as a magazine department opener */
       .ritual-head {
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -978,30 +835,17 @@
         margin: 0;
       }
 
-      /* One consistent card template for all six SKUs instead of six
- bespoke shapes: a real shop grid reads as one system the customer
- learns once. */
-      /* One product gets the hero treatment (Drops, the flagship - same
- idea hero itself runs: one focus at a time, not six equal things
- competing), the other five sit underneath as a quiet, compact list.
- Not a shop grid anymore - a featured item plus its shelf. */
+      /* one card template for all six SKUs - a real shop grid reads as one system learned once */
+      /* one product gets the hero treatment (Drops), the other five sit under as a compact list - featured item plus its shelf */
       .rit-showcase {
         display: grid;
         grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
         gap: 24px;
-        /* stretch, not start: the flagship card was 669px against the
- list's 532px, leaving 137px of bare cream under the last row. The
- photo below absorbs the difference so both columns finish level. */
+        /* stretch not start: flagship card was 669px vs the list's 532px; the photo absorbs the difference so both columns finish level */
         align-items: stretch;
       }
 
-      /* Per-product accent, bound once here. --accent (bright) still drives
- the photo tint below, unchanged - but a bright color as a border or
- outline on a WHITE card barely registers (that's the whole reason the
- old dark cards needed a manufactured 0.5-alpha cream border in the
- first place). --accent-deep is the same six-color story using the
- already-established "-deep" tokens instead, computed against --cream:
- 7.0-16.2:1, nowhere near the 3:1 floor for a border. */
+      /* per-product accent-deep for borders/outlines - a bright accent on a white card barely registers; -deep clears 7-16:1 on cream */
       .p-flagship[data-product="drops"],
       .p-row[data-product="drops"] {
         --scrim: rgba(156, 41, 20, 0.78);
@@ -1043,19 +887,7 @@
         display: flex;
         flex-direction: column;
         position: relative;
-        /* White, not a dark navy panel: on a cream page a dark block
- would itself become the loud, out-of-place element (this is exactly
- the "eye-searing" complaint from the dark version, just inverted) -
- white is the neutral here, the accent-deep border is what actually
- signals "card". Flat #fff measured only 3.65 dE from --cream (CIE76) -
- close enough that the card and the page it sits on read as the same
- surface. A 6% pull toward the product's own --accent, mixed in OKLab
- so the six very different hues (a saturated red vs. a near-neutral
- midnight) land at a comparable, barely-there distance instead of the
- warm ones separating three times more than the cool ones would in
- plain sRGB, fixes that while staying visibly "an off-white card", not
- a colored one - ink text stays >=9.8:1 (needs 4.5), the fallback
- before it keeps older browsers on the flat white. */
+        /* white card, accent-deep border: on a cream page a dark block would be the loud element; 6% OKLab pull toward the accent so all six hues sit an equal hair off the page */
         border: 1px solid var(--accent-deep);
         background: #fff;
         background: color-mix(in oklab, var(--accent) 6%, var(--cream));
@@ -1064,27 +896,17 @@
         transition: box-shadow 0.3s var(--ease);
       }
       .p-flagship:hover {
-        /* Border is already the accent color at rest, so hover can't say
- anything new by changing it - a soft lift shadow is the light-surface
- equivalent instead (shadows read on light cards, not on dark ones,
- which is why the dark version used a border-color change here). */
+        /* border is already the accent at rest, so hover lifts with a shadow instead (shadows read on light cards, not dark) */
         box-shadow: 0 10px 24px rgba(40, 42, 113, 0.14);
       }
-      /* Cube-click target: briefly rings the whole card instead of just
- scrolling to it, so the jump from clicking a cube face actually reads
- as "landed here", not just a page shift. */
+      /* cube-click briefly rings the whole card so the jump reads as 'landed here', not just a page shift */
       .p-flagship.is-targeted {
         outline: 2px solid var(--accent-deep);
         outline-offset: 4px;
       }
       .p-flagship-photo {
         position: relative;
-        /* No fixed ratio here: the photo takes whatever height is left
- after the body, so the card finishes exactly level with the list
- beside it. It also stops the section changing height when a product
- with longer copy is selected - the body grows, the photo gives back
- the same amount. The ratio comes back at <=960px, where the card is
- alone in its column and has nothing to match. */
+        /* no fixed ratio: the photo takes whatever height is left after the body, so the card finishes level with the list and the section doesn't jump height on select; ratio returns <=960px */
         flex: 1 1 240px;
         min-height: 240px;
         overflow: hidden;
@@ -1114,11 +936,7 @@
         flex-direction: column;
         gap: 14px;
       }
-      /* Name + tag sit on the photo instead of under it. The photo is the
- tallest thing in the card, so with the identity below it the name was
- getting pushed past the fold and the card read as a picture with
- orphaned text. Up here it lands where the eye already is, and the body
- below shrinks to just the facts. */
+      /* name + tag on the photo, not under it - the photo is the tallest thing, so identity below was pushed past the fold */
       .p-flagship-caption {
         position: absolute;
         left: 0;
@@ -1130,12 +948,7 @@
         flex-direction: column;
         gap: 2px;
       }
-      /* Each photo is a different brightness in exactly this strip - measured
- per SKU, worst pixel in the band, not averaged: Drops sits at 0.11
- luminance there and Mist at 0.53, so one shared overlay would either
- wash out the dark ones or leave cream text at 1.8:1 on the light ones.
- --scrim per product is the alpha where cream clears 4.5:1 over that
- SKU's own worst pixel; the gradient keeps the top of the photo clean. */
+      /* each photo is a different brightness in this exact strip (Drops 0.11, Mist 0.53); --scrim per SKU is the alpha where cream clears 4.5:1 over that photo's worst pixel */
       .p-flagship-caption::before {
         content: "";
         position: absolute;
@@ -1162,9 +975,7 @@
         margin: 0;
       }
 
-      /* The quiet shelf: five rows, each a fraction of the flagship's
- visual weight - photo, name, spec and price all shrink together so
- nothing here competes with Drops for attention. */
+      /* the quiet shelf: five rows at a fraction of the flagship's weight so nothing competes with Drops */
       .p-list {
         display: flex;
         flex-direction: column;
@@ -1176,18 +987,13 @@
         gap: 14px;
         padding: 10px;
         border: 1px solid var(--accent-deep);
-        /* Same 6% OKLab pull toward --accent as .p-flagship above, same
- reason: flat white barely separated from the --cream page underneath. */
+        /* same 6% OKLab pull toward --accent as .p-flagship - flat white barely separates from the --cream page */
         background: #fff;
         background: color-mix(in oklab, var(--accent) 6%, var(--cream));
         position: relative;
         transition: box-shadow 0.3s var(--ease);
       }
-      /* The row itself is a container, not a control - it holds two separate
- actions (choose this product, add it to the bag) and a button can't
- legally contain another button. So the name is the real control and
- its ::after stretches over the whole row to keep the big click target;
- the Add button lifts above that overlay. */
+      /* the row holds two actions and a button can't contain a button, so the name is the control and its ::after covers the row; Add lifts above that overlay */
       .p-row-select {
         appearance: none;
         background: none;
@@ -1204,8 +1010,7 @@
         position: absolute;
         inset: 0;
       }
-      /* Ring has to draw on the overlay, not the 20px word, so keyboard focus
- shows the whole row that's about to be chosen. */
+      /* focus ring draws on the overlay, not the 20px word, so it shows the whole row about to be chosen */
       .p-row-select:focus-visible {
         outline: none;
         box-shadow: none;
@@ -1217,10 +1022,7 @@
       .p-row:hover {
         box-shadow: 0 6px 16px rgba(40, 42, 113, 0.12);
       }
-      /* Persistent selected state - separate from :hover (momentary) and
- .is-targeted (a one-off flash from elsewhere). This is "the flagship
- panel is currently showing you this one". Border is already the
- accent, so the tell here is a light accent-tinted fill instead. */
+      /* persistent selected state (distinct from :hover and .is-targeted); border is already the accent so the tell is a light accent fill */
       .p-row.is-active {
         background: color-mix(in srgb, var(--accent-deep) 8%, #fff);
       }
@@ -1319,19 +1121,12 @@
         letter-spacing: 0.035em;
         font-variant-numeric: tabular-nums;
       }
-      /* Machine is a licensed display face and its actual glyph coverage
- can't be checked from here (it only renders on the machine that owns
- it) - the euro sign specifically is exactly the kind of glyph a
- narrow industrial display face is likely to skip. Forcing it onto a
- plain system stack makes it render correctly regardless of what
- Machine does or doesn't include. */
+      /* Machine's euro glyph can't be verified from here and a narrow display face is likely to skip it; force it onto a system stack */
       .p-currency {
         font-family: -apple-system, Helvetica, Arial, sans-serif;
       }
 
-      /* Compact +Add button - always visible, doesn't hide behind hover
- (people need to see the affordance to know they can act). Reversed
- color state on hover so clicking feels like committing something. */
+      /* compact +Add, always visible (not hover-revealed); reversed colours on hover so clicking feels like committing */
       .p-add {
         display: inline-flex;
         position: relative;
@@ -1393,24 +1188,14 @@
       }
 
       @media (max-width: 560px) {
-        /* Spec is the one field a thumbnail-sized row can't spare room
- for once name, price and Add all need to fit on 375px - it's the
- least essential of the four (name + price + add are the actual
- decision), so it's what drops. */
+        /* spec drops first on a thumbnail row - name + price + Add are the actual decision */
         .p-row-spec {
           display: none;
         }
       }
 
-      /* At 320px the row still overflowed once the button label was set in
- French: "Ajouter" is 99px against "Add" at 43px, and that alone pushed
- the row 7px past the viewport. Tightening the internal gaps and the
- button's own padding buys back ~16px, which covers the longest label in
- either language without dropping another field. */
-      /* Грань куба сжимается по --size, а подписи на ней были заданы в
- фиксированных пикселях: на 320px «GOUTTES» 44px плюс «50 €» 32px шире
- самой грани. Плюс французская кнопка подписки («S'inscrire» против
- «Join») распирала строку формы. */
+      /* at 320px the French 'Ajouter' (99px vs 'Add' 43px) pushed the row past the viewport; tighter gaps and button padding buy back ~16px */
+      /* грань куба сжимается по --size, а подписи были в фиксированных px; на 320px 'GOUTTES' + '50 €' шире грани, плюс французская кнопка распирала форму */
       @media (max-width: 560px) {
         .face-name {
           font-size: 32px;
@@ -1434,20 +1219,9 @@
         }
       }
 
-      /* ---------- PROOF (contrast section: the flip from cream to ink IS the
- transition). The three facts (1 farm, 11 days, 0 additives) are a real
- sequence, source to door, so they're drawn as a connected timeline
- instead of buried mid-sentence or boxed in identical generic cards. */
-      /* Hero fills 100% of its surface with one saturated colour; every
- section after it fell back to near-black + a faint accent, which is
- exactly the energy drop the loudness complaint was about. Proof now
- does what hero does: the background itself IS the colour, a real
- sweep through the brand palette, not a dark canvas with a glow
- taped behind the text. */
-      /* One flat color, same as hero: the old 4-stop sweep (plum through
- red) plus its own 2-color glow meant six hues were visible in this
- one section at once. Plum-deep reads as calm and trustworthy for a
- lab-data section, and differs from hero's red without fighting it. */
+      /* ---------- PROOF (the flip from cream to ink IS the transition). The three facts are a real source-to-door sequence, drawn as a timeline */
+      /* Proof does what hero does - the background itself is the colour, a real palette sweep, not a dark canvas with a glow behind the text */
+      /* one flat colour like hero; plum-deep reads calm/trustworthy for lab data and differs from hero's red without fighting it */
       .proof {
         background: var(--plum-deep);
         color: var(--cream-on-plum);
@@ -1456,11 +1230,7 @@
         overflow: hidden;
       }
       .proof h2 {
-        /* Bumped from clamp(30,3.6vw,50) - the manifest is the section's
- actual point, and the COA panel's own density was winning the
- visual-weight contest by sheer row count even after being decluttered.
- Size is the strongest hierarchy tool available; using it here instead
- of shrinking COA further keeps the lab data legible. */
+        /* bumped up - the manifest is the section's point and COA's row count was winning the visual-weight contest; size is the strongest hierarchy tool */
         font-size: clamp(36px, 4.4vw, 60px);
         line-height: 1.1;
         max-width: 460px;
@@ -1475,20 +1245,11 @@
         color: var(--cream-on-plum);
       }
 
-      /* Scramble-text: characters cycle through random glyphs before landing
- on the real word, driven by JS (see script). Literalizes "calibrate",
- the text visibly settles into place instead of just fading in, same
- idea as a scale finding zero. Fires once, on scroll-into-view. */
+      /* scramble-text: characters cycle random glyphs before landing, literalizing 'calibrate'; fires once on scroll-into-view */
       .scramble-line {
         display: inline-block;
       }
-      /* Groups a scrambled line's letters by word. Without this, every
- letter is its own inline-block box with nothing gluing it to its
- neighbor - the browser treats every letter boundary as a valid line
- break, not just the real word gaps, so a headline that wraps at all
- can split mid-word ("feeling." became "feelin" / "g."). white-space:
- nowrap on the word keeps its letters atomic; the real space between
- word spans is still a normal, breakable gap. */
+      /* groups a scrambled line's letters by word so the browser can't break mid-word ('feeling.' split to 'feelin'/'g.'); nowrap per word, real space still breakable */
       .scramble .word {
         white-space: nowrap;
       }
@@ -1496,31 +1257,21 @@
         display: inline-block;
       }
 
-      /* Claim on the left, the actual lab result on the right. The panel is
- the point of the section: a brand can say "tested" in a headline, so
- the headline is deliberately paired with the numbers that back it. */
+      /* claim left, lab result right - a brand can say 'tested' in a headline, so the headline is paired with the numbers that back it */
       .proof-top {
         position: relative;
         z-index: 1;
         display: grid;
-        /* Was 1fr/0.9fr, near-even - giving the manifest column real
- majority space (was losing the weight contest to COA's row count
- despite being the section's actual point). */
+        /* gives the manifest column real majority space - it was losing the weight contest to COA's row count */
         grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.9fr);
         gap: 70px;
-        /* stretch, not start: the COA panel is naturally taller than the
- headline+journey column (more data blocks), and align-items:start
- left the shorter column stranded at the top with a bare gap under
- it. Stretching lets .proof-say fill the same height and spread its
- own content across it instead. */
+        /* stretch not start: the COA panel is taller, so start left the shorter column stranded with a bare gap under it */
         align-items: stretch;
       }
       .proof-say {
         display: flex;
         flex-direction: column;
-        /* Headline+sub anchor the top, the journey stats anchor the
- bottom, and the gap between them grows or shrinks with whatever
- height the COA column sets, instead of leaving dead space below. */
+        /* headline anchors the top, journey stats the bottom, and the gap between flexes with the COA column's height */
         justify-content: space-between;
         padding: 10px 0 6px;
       }
@@ -1548,11 +1299,7 @@
         color: var(--cream-on-plum);
       }
 
-      /* Lab panel: a physical stack of batch cards instead of one panel
- whose text/bars got rewritten by JS. Every number is presented the way
- a real COA sheet presents it - measured value, its share of the total,
- a plain pass line for the contaminant screen - and bars fill on
- scroll-in so the reading feels measured rather than decorative. */
+      /* physical stack of batch cards instead of one JS-rewritten panel; every number shown the way a real COA sheet shows it, bars fill on scroll-in */
       .coa-top {
         display: flex;
         align-items: baseline;
@@ -1565,25 +1312,18 @@
         text-transform: uppercase;
         color: var(--cream-on-plum);
       }
-      /* Decorative count only - a screen reader is told the same thing
- through each card's own aria-label as it becomes current, so this
- doesn't need to be announced a second time. */
+      /* decorative count only - each card's aria-label announces the same thing as it becomes current */
       .coa-progress {
         font-size: 12px;
         font-variant-numeric: tabular-nums;
         color: rgba(244, 245, 247, 0.6);
       }
 
-      /* All five cards occupy the same grid cell, so the deck's height is
- whichever card is tallest - no fixed height to keep in sync by hand -
- and stacking is plain paint order (transform/z-index), not absolute
- positioning pinned to a guessed box. */
+      /* all five cards share one grid cell so the deck's height is the tallest card; stacking is plain paint order, not absolute positioning */
       .coa-deck {
         display: grid;
       }
-      /* Карточки веера сдвинуты вправо на фиксированные 16 и 28px. На узких
- экранах этот сдвиг уходит за вьюпорт, поэтому колоде отдаётся правый
- отступ под размах веера - сами карточки становятся уже, эффект цел. */
+      /* карточки веера сдвинуты на 16/28px и уходят за узкий вьюпорт, поэтому колоде даётся правый отступ под размах */
       @media (max-width: 560px) {
         .coa-deck {
           margin-right: 34px;
@@ -1592,25 +1332,16 @@
       .coa-card {
         grid-area: 1 / 1;
         position: relative;
-        /* Solid, not the panel's old rgba(0,0,0,0.34) - that was a tint
- for one sheet sitting on .proof's own background, and it stayed a
- tint here too, every stacked card behind the front one showed straight
- through it. #120d20 is that exact 34%-black-over-plum-deep composite
- baked into a flat color instead, so the front card actually occludes
- the ones fanned behind it, the way a real card would. */
+        /* solid, not rgba(0,0,0,0.34) - a tint let every stacked card show through; #120d20 is that 34%-black-over-plum-deep baked flat so the front card occludes */
         background: #120d20;
         border: 1px solid var(--line);
-        /* Tighter than before (was 30/32/34) - one more turn of the same
- knob that made the manifest column wider: the panel is real, useful
- data, but it's supporting evidence, not the section's headline. */
+        /* tighter fan offsets - the panel is supporting evidence, not the section headline */
         padding: 22px 24px 18px;
         transition:
           transform 0.5s var(--ease),
           opacity 0.4s var(--ease);
       }
-      /* Only the front card is real - the fanned ones behind it are a
- depth cue, not five separate hit targets guessing which sliver was
- meant. */
+      /* only the front card is real; the fanned ones are a depth cue, not five hit targets */
       .coa-card:not([data-depth="0"]) {
         pointer-events: none;
       }
@@ -1624,10 +1355,7 @@
         outline: 2px solid var(--ember);
         outline-offset: 3px;
       }
-      /* The card mid-flight needs its own, faster timing and has to paint
- above the whole stack (its z-index is set inline alongside the exit
- transform) so it visibly passes over the card it just revealed instead
- of sliding out from underneath it. */
+      /* the card mid-flight gets its own faster timing and paints above the stack (z-index set inline) so it passes over the card it revealed */
       .coa-card.is-leaving {
         transition:
           transform 0.42s cubic-bezier(0.3, 0.6, 0.4, 1),
@@ -1639,19 +1367,11 @@
         margin-bottom: 34px;
         border-bottom: 1px solid var(--line);
         font-size: 13px;
-        /* 0.6 measured 4.03:1 against this panel's darkest real position
- (the .coa dark overlay sitting over the reddest point of .proof's own
- gradient) - fails 4.5:1. 0.68 clears it (4.76:1) with a small margin
- instead of landing right on the line. */
+        /* 0.6 measured 4.03:1 at this panel's darkest real position - fails 4.5:1; 0.68 clears it at 4.76:1 */
         color: rgba(244, 245, 247, 0.68);
       }
       .coa-block + .coa-block {
-        /* 34px between blocks vs. 11px between bars inside one: proximity
- has to read as three separate groups, not one continuous list of
- rows - the old 22px only doubled the internal gap, not enough of a
- break to read as a boundary. padding-top, not margin-top, so it stays
- a different property than .coa-screen's own margin-top below and the
- two add up instead of one winning a specificity fight over the other. */
+        /* 34px between groups vs 11px between bars so proximity reads as three groups; padding-top not margin-top so it adds to .coa-screen's margin */
         padding-top: 34px;
       }
       .coa-label {
@@ -1661,12 +1381,7 @@
         margin-bottom: 14px;
       }
 
-      /* Every row shares one grid and one track height. The lead row used to
- override both (76px columns, 10px track), which pushed its bar 14px
- right and made it 28px shorter than the rest - so CBD's 82% was drawn
- on a different scale than the other three. In a comparison chart that
- isn't a style choice, it's a wrong reading. Emphasis for CBD is carried
- by weight and the label column only, where it can't distort the data. */
+      /* every row shares one grid and track height - the lead row used to override both, drawing CBD's 82% on a different scale than the rest */
       .coa-bar {
         display: grid;
         grid-template-columns: 68px 1fr 62px;
@@ -1675,10 +1390,7 @@
         margin-bottom: 11px;
       }
       .coa-name {
-        /* Body face, not Machine: this is 13px UI text, and Machine is a
- display face that stops being legible well above this size (the
- project's own note says as much). It was both hard to read and, being
- near-white and heavy at small size, unpleasantly sharp. */
+        /* body face, not Machine - this is 13px UI text and Machine stops being legible well above that */
         font-size: 13px;
         font-weight: 500;
         letter-spacing: 0.04em;
@@ -1689,15 +1401,7 @@
         background: rgba(244, 245, 247, 0.12);
         overflow: hidden;
       }
-      /* One scale for all four rows: CBD's 18.4% is the 82% bar, everything
- else is its own number against that same ruler (CBDA 7.6 -> 33.9,
- CBG 0.9 -> 4, THC 0.18 -> 0.8). They were previously drawn 4-5x too
- long, which made the section's own "a number you can check" argument
- false at exactly the place it's being made. The floor keeps the THC
- sliver from vanishing entirely at narrow widths - it reads as "almost
- nothing", which is what 0.18% is. Fixed to the EB-24 panel across
- every card, so a batch's bars stay comparable card to card instead of
- each one drawing itself against its own maximum. */
+      /* one scale for all four rows (CBD 18.4% = the 82% bar); they were drawn 4-5x too long, making the section's 'a number you can check' claim false; fixed to the EB-24 panel so cards stay comparable */
       .coa-fill {
         display: block;
         height: 100%;
@@ -1718,8 +1422,7 @@
         /* Number column - digits must sit in the same place row to row. */
         font-variant-numeric: tabular-nums;
       }
-      /* CBD is the one number people actually came to check. Emphasis without
- touching the shared grid or the track. */
+      /* CBD is the number people came to check - emphasis via weight and label only, not the shared grid */
       .coa-bar-lead {
         margin-bottom: 18px;
       }
@@ -1761,10 +1464,7 @@
         white-space: nowrap;
       }
 
-      /* No label on this one - the sentence says what it is on its own, and
- the block sits last so the panel doesn't need a closing heading. Its
- own padding-top is trimmed to match, so removing the label doesn't
- leave the gap the label used to fill. */
+      /* no label - the sentence says what it is, and it sits last so the panel needs no closing heading; padding-top trimmed to match */
       .coa-screen {
         border-top: 1px solid var(--line);
         margin-top: 24px;
@@ -1776,21 +1476,14 @@
         color: rgba(244, 245, 247, 0.72);
       }
       .coa-row .ok {
-        /* Was --ember: fails 3.61-4.66:1 depending where this panel lands
- on the section's own gradient (checked against the 34%-black-over-
- gradient composite, same issue as the journey numbers above). Cream
- is safe everywhere; weight carries the emphasis too, not color alone. */
+        /* was --ember (fails 3.6-4.7:1 on this gradient); cream is safe everywhere and weight carries the emphasis */
         color: var(--cream-on-plum);
         font-weight: 700;
       }
 
       @media (max-width: 1000px) {
         .proof-top {
-          /* minmax(0, 1fr), not bare 1fr: a plain 1fr track defaults to
- minmax(auto, 1fr), so the column won't shrink below its content's
- intrinsic width. The COA panel's fixed-width bar labels were forcing
- the track wider than the viewport, silently clipped by body's
- overflow-x:hidden instead of visibly overflowing. */
+          /* minmax(0, 1fr) not bare 1fr, which is minmax(auto, 1fr) and won't shrink below content - the fixed bar labels were forcing the track past the viewport */
           grid-template-columns: minmax(0, 1fr);
           gap: 46px;
         }
@@ -1808,18 +1501,9 @@
         }
       }
 
-      /* FAQ as a spec-sheet grid, not an accordion: each question surfaces
- the one number that actually answers it (0.18% THC, 10-20 min onset,
- 5-drop starting dose, 24h dispatch) as the dominant visual, with the
- full question/answer as support text. Nothing sits behind a click -
- for a brand whose whole pitch is "here's the number, not a vibe",
- hiding the THC content behind an accordion toggle undercut its own
- argument. Colors are pulled from the product palette (skipping teal,
- which fails 3:1 even at large size against ink) so this section still
- reads as part of the same system instead of a bolted-on FAQ widget. */
+      /* FAQ as a spec-sheet grid, not an accordion: each question surfaces the number that answers it; nothing behind a click, since the pitch is 'here's the number' */
       .faq {
-        /* Same light half of the palette as Ritual - opaque, covers the
- dark flow layer entirely. */
+        /* same light half of the palette as Ritual - opaque, covers the dark flow layer */
         background: var(--cream);
         /* Same full-bleed background / capped content as .ritual above. */
         padding: 140px max(40px, (100% - var(--measure)) / 2) 150px;
@@ -1843,22 +1527,14 @@
         margin: 0;
       }
 
-      /* Was a 12-column grid holding four tiles as 6 + 4/4/4, which never
- tiled evenly - every row left 2 dead columns, and the wide tile's
- `grid-row: span 2` stretched it to 808px around 206px of content.
- Four items go in a 2x2 without any of that arithmetic. */
+      /* was a 12-col grid that never tiled evenly (2 dead columns per row); four items go in a 2x2 with no arithmetic */
       .faq-grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 18px;
       }
       .faq-tile {
-        /* White + accent-deep border, same reasoning as the Ritual cards:
- a neutral border barely registers between two very-similar-lightness
- surfaces, the accent-deep border is what actually reads as "tile".
- Fill gets the same 6% OKLab pull toward the tile's own --accent as
- the Ritual cards, for the same reason - flat white didn't separate
- from --cream underneath it either. */
+        /* white + accent-deep border like the Ritual cards - a neutral border barely registers between two near-equal-lightness surfaces; same 6% OKLab fill pull */
         background: #fff;
         background: color-mix(in oklab, var(--accent) 6%, var(--cream));
         border: 1px solid var(--accent-deep);
@@ -1871,11 +1547,8 @@
       .faq-tile:hover {
         box-shadow: 0 10px 24px rgba(40, 42, 113, 0.14);
       }
-      /* The THC question is the one everyone actually leads with, so it
- gets the wide flagship slot instead of matching the other three. */
-      /* Still the lead question, but it earns that by the size of its number
- (already 60-104px against the others' 40-64px), not by occupying two
- grid rows it has nowhere near enough content to fill. */
+      /* the THC question is the one everyone leads with, so it gets the wide flagship slot */
+      /* still the lead question, but it earns that by the size of its number, not by spanning two grid rows it can't fill */
       .faq-flag {
         justify-content: flex-start;
       }
@@ -1931,11 +1604,7 @@
 
       /* ---------- FOOTER / CTA ---------- */
       /* ---------- FOOTER / CTA ---------- */
-      /* Closing section, boldest colour in the page: a real sweep through
- all six product hues, not a thin bar sitting on a dark section. "
- Full-spectrum" is already the product's own word (hero copy) - this
- is that word made literal as the whole background, the way the
- earlier version made it literal as a 5px line. */
+      /* closing section, boldest colour: a real sweep through all six product hues - 'full-spectrum' made literal as the whole background */
       .cta {
         background: linear-gradient(
           115deg,
@@ -1965,11 +1634,7 @@
       }
       .subscribe-label {
         font-size: 13px;
-        /* .cta is the full 6-stop gradient, not one flat color, so this was
- checked against the actual worst point on it (sampled every stop plus
- the label's real position at 320-1440px) rather than a single assumed
- background: cream-soft dropped as low as 2.86:1 at some of those
- points, under 4.5:1. Solid cream clears 4.74:1 at the worst of them. */
+        /* .cta is the 6-stop gradient, so checked against its actual worst point (cream-soft dropped to 2.86:1); solid cream clears 4.74:1 */
         color: var(--cream);
       }
       .subscribe-row {
@@ -1980,15 +1645,10 @@
       }
       .subscribe input {
         flex: 1;
-        /* Cream at 0.18 alpha measured under 3:1 against the gradient at
- several points along it - 0.7 clears 3:1 everywhere checked (320 to
- 1440px), an actual visible field edge instead of one tuned to a single
- assumed color. */
+        /* cream at 0.18 measured under 3:1 on the gradient; 0.7 clears 3:1 at every width checked */
         border: 1px solid rgba(244, 245, 247, 0.7);
         border-right: none;
-        /* Translucent dark backing over whichever part of .cta's own
- gradient sits behind it, not a flat color - the alpha is what keeps it
- readable regardless of which stop lands here. */
+        /* translucent dark backing over whatever part of .cta's gradient sits behind it, so alpha keeps it readable regardless of stop */
         background: rgba(24, 17, 16, 0.3);
         padding: 16px 18px;
         font-size: 14px;
@@ -1996,9 +1656,7 @@
         color: var(--cream);
       }
       .subscribe input::placeholder {
-        /* Even against the input's own dark backing, cream-soft dropped
- under 4.5:1 at some points along .cta's gradient - solid cream instead,
- checked the same way as the label above. */
+        /* cream-soft still dropped under 4.5:1 at points on the gradient even over the dark backing; solid cream instead */
         color: var(--cream);
       }
       .subscribe input:focus-visible {
@@ -2020,9 +1678,7 @@
         text-transform: uppercase;
         cursor: pointer;
       }
-      /* Ставится после базового правила намеренно: специфичность та же, и при
- обратном порядке побеждал бы базовый padding. Французское «S'inscrire»
- вдвое длиннее «Join» и распирало строку формы за 320px. */
+      /* ставится после базового правила намеренно: специфичность та же, иначе побеждал бы базовый padding; французское 'S'inscrire' распирало форму за 320px */
       @media (max-width: 560px) {
         .subscribe button {
           padding: 0 12px;
@@ -2045,8 +1701,7 @@
       }
 
       footer {
-        /* Closes the dark/light rhythm the page runs on: hero-dark,
- ritual-light, proof-dark, faq-light, cta-dark, footer-light. */
+        /* closes the dark/light rhythm: hero-dark, ritual-light, proof-dark, faq-light, cta-dark, footer-light */
         background: var(--cream);
         border-top: 1px solid var(--ink-line);
         padding: 40px max(40px, (100% - var(--measure)) / 2);
@@ -2062,8 +1717,7 @@
         display: flex;
         gap: 10px;
       }
-      /* Measured 63x16 - under the 24x24 minimum target on every breakpoint.
- Padding gets the hit area there without moving the text. */
+      /* measured 63x16, under the 24x24 target on every breakpoint; padding gets the hit area without moving the text */
       footer .flinks a {
         display: inline-flex;
         align-items: center;
@@ -2071,27 +1725,13 @@
         padding: 4px 8px;
       }
 
-      /* Stacked hero: headline, lede, buttons and the cube all sit in one
- column, and at 340px of illustration plus desktop padding the section
- ran taller than the viewport with nothing below the fold to show for
- it - the page looked like it ended there. Sizing the illustration and
- the gaps against viewport height instead of fixed pixels leaves the
- cream edge of The Ritual visible, which is the affordance now that
- the scroll cue is gone. Placed after the base hero rules so these
- actually win - the desktop margins are declared at the same
- specificity further up. */
+      /* stacked hero: sizing the illustration and gaps against viewport height keeps the cream edge of The Ritual visible; placed after the base rules so they win */
       @media (max-width: 860px) {
         .hero {
           min-height: auto;
           padding: 28px 40px 96px;
         }
-        /* dvh mirrors the browser chrome mobile Safari/Chrome are actually
- showing at paint time - plain vh is fixed to the chrome-collapsed
- (tallest) viewport, so on first load, with the address bar still
- expanded, 28vh/26vh below were sized against room that wasn't
- actually there yet and the cube's lower faces ran under the fold.
- Declared after the vh version so unsupported browsers keep that
- value; dvh overrides it everywhere else. */
+        /* dvh tracks the browser chrome shown at paint time - plain vh is fixed to the tallest viewport, so on first load the cube's lower faces ran under the fold; vh kept as fallback */
         .hero-grid {
           grid-template-columns: 1fr;
           gap: 24px;
@@ -2113,13 +1753,7 @@
           margin-top: 20px;
         }
       }
-      /* Five terpene names can't be made narrower than the words themselves,
- so five upright bars need ~297px of label width and the panel has 222
- at 320px - the last bar was being clipped off the chart entirely. Laid
- on their side they get the same 68px label column the cannabinoid rows
- above already use, and --h reads as length instead of height (a grid
- item resolves its percentage against its own column, so the scale
- stays true). */
+      /* five terpene names can't go narrower than the words, so upright bars clipped the last one at 320px; laid on their side they get the 68px label column and --h reads as length */
       @media (max-width: 560px) {
         .coa-terps {
           flex-direction: column;
@@ -2161,10 +1795,7 @@
           width: var(--h);
         }
       }
-      /* Short phones (SE, mini, anything under ~700px tall): the vh-based
- illustration already shrinks itself, but the fixed pixels around it -
- nav bar, section padding, gaps - don't, and together they're what
- pushes the fold past the hero here. */
+      /* short phones: the vh illustration shrinks itself but the fixed pixels around it (nav, padding, gaps) don't - together they push the fold past the hero */
       @media (max-width: 860px) and (max-height: 700px) {
         nav {
           padding: 13px 24px;
@@ -2200,12 +1831,7 @@
         }
       }
 
-      /* Phone breakpoint: the 120-150px vertical section padding was tuned
- for wide desktop compositions, where it reads as intentional
- breathing room. On a 375px screen the same absolute pixel value eats
- a much bigger share of what's visible per scroll and reads as dead
- space instead. Scale it down here, plus tighten the 40px side gutters
- a little so type gets more usable width. */
+      /* phone breakpoint: 120-150px section padding tuned for desktop eats too much of a 375px screen and reads as dead space; scale it down, tighten the gutters */
       @media (max-width: 640px) {
         .hero,
         .ritual,
@@ -2267,9 +1893,7 @@
       </div>
     </nav>
 
-    <!-- Cart was a dead hardcoded "0" span with no panel behind it and an Add
- button that only toggled its own label. Real state now: one quantity per
- SKU, every control for that SKU reads from it. -->
+    <!-- cart was a hardcoded '0' span with an Add button that toggled its own label; real state now - one quantity per SKU, every control reads from it -->
     <div class="cart-scrim" id="cartScrim" hidden></div>
     <aside
       class="cart-panel"
@@ -2536,11 +2160,7 @@
             <span class="coa-progress" id="coaProgress" aria-hidden="true">1 of 5</span>
           </div>
 
-          <!-- A physical stack, not a pager: each card is one batch's full
-          result, fanned behind the current one. Tapping (or Enter/Space on
-          the focused card) sends it flying off and cycles it to the back -
-          the same single gesture you'd use to flip through a hand of cards,
-          so there's no forward/back arrow pair to build or explain. -->
+          <!-- a physical stack, not a pager: each card is one batch's full result, fanned behind the current one; tap or Enter/Space sends it to the back - one gesture, no arrow pair -->
           <div class="coa-deck" id="coaDeck">
             <div class="coa-card" id="coaCard0" data-idx="0">
               <span class="coa-batch"><span data-i18n="coa.batch">Batch</span> EB-24 &middot; <span data-i18n="coa.tested">tested</span> 04.08.2026</span>
@@ -4011,13 +3631,6 @@ const I18N = {
       applyLanguage(initialLang);
     </script>
 
-    <!--
- Photo credits (Unsplash License, free for commercial use):
- Roll (cube face only): Elsa Olofsson - unsplash.com/photos/brown-cigarette-stick-on-blue-surface-Et2GCPYzze4
-
- Everything else - Drops, Mist, Roll (row/card view), Balm, Chew, Bath:
- AI-generated renders (client-commissioned), not stock - no external
- credit applies.
--->
+    <!-- Photo credits (Unsplash License, free for commercial use): Roll (cube face only): Elsa Olofsson - unsplash.com/photos/brown-cigarette-stick-on-blue-surface-Et2GCPYzze4. Everything else (Drops, Mist, Roll row/card, Balm, Chew, Bath): AI-generated renders, client-commissioned, no external credit. -->
   </body>
 </html>
