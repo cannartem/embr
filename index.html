@@ -167,6 +167,37 @@
  scrollbars and any UA-drawn chrome should match rather than render
  as light widgets on a dark ground. */
         color-scheme: dark;
+        /* proximity, not mandatory: sections are of very different heights
+ (Ritual and Proof each run taller than the viewport), so a mandatory
+ snap would trap the reader mid-section and force big scroll gestures
+ to escape. proximity only pulls in when the user has already stopped
+ near a section edge, which is the "inertia into the next block" feel
+ without fighting normal reading. */
+        scroll-snap-type: y proximity;
+      }
+      /* Snap points sit at the top of each section. scroll-padding matches
+ the sticky nav so a snapped section clears it, same offset used by the
+ anchor scroll-margin above. */
+      html {
+        scroll-padding-top: 96px;
+      }
+      section.hero,
+      section.ritual,
+      section.proof,
+      section.faq,
+      section.cta {
+        scroll-snap-align: start;
+        /* normal, not always: a section already snapped past shouldn't
+ re-trap the scroll on a fast flick through the middle of the page. */
+        scroll-snap-stop: normal;
+      }
+      /* Reduced-motion respects the intent - the whole point of snap is
+ an animated correction, so if the user's OS asks for less motion,
+ the snap goes with the smooth-scroll and the transitions. */
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-snap-type: none;
+        }
       }
       /* Anchor targets sit under the sticky nav without this. */
       section[id],
