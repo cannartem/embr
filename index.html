@@ -1730,8 +1730,9 @@
  adding space outside it - that pushed the cube up into the row above
  instead of buffering it from the section edge below. Margin actually
  grows .hero's own content height. */
-          margin-bottom: calc(min(340px, 88vw, 30vh) * 0.22);
-          margin-bottom: calc(min(340px, 88vw, 30dvh) * 0.22);
+          margin-bottom: calc(min(340px, 88vw, 30vh) * 0.34);
+          margin-bottom: calc(min(340px, 88vw, 30dvh) * 0.34);
+          align-items: flex-end;
         }
         .cube {
           --size: min(340px, 88vw, 30vh);
@@ -1801,8 +1802,9 @@
         .hero-illus {
           height: min(300px, 27vh);
           height: min(300px, 27dvh);
-          margin-bottom: calc(min(320px, 86vw, 25vh) * 0.22);
-          margin-bottom: calc(min(320px, 86vw, 25dvh) * 0.22);
+          margin-bottom: calc(min(320px, 86vw, 25vh) * 0.34);
+          margin-bottom: calc(min(320px, 86vw, 25dvh) * 0.34);
+          align-items: flex-end;
         }
         .cube {
           --size: min(320px, 86vw, 25vh);
