@@ -316,6 +316,12 @@
         font-size: 11px;
         font-variant-numeric: tabular-nums;
       }
+      /* An empty bag showing a red "0" badge reads as broken, not as a real
+ zero - hide it until there's something to actually count. [hidden] alone
+ loses to the inline-flex display above it without this. */
+      .bagdot > span[hidden] {
+        display: none;
+      }
 
       /* ---------- CART ---------- */
       .cart-scrim {
@@ -1882,7 +1888,7 @@
           aria-expanded="false"
           aria-controls="cartPanel"
         >
-          <span id="cartCount">0</span>
+          <span id="cartCount" hidden>0</span>
         </button>
         <button class="nav-burger" type="button" aria-label="Menu" data-i18n-aria="nav.menu" aria-expanded="false" aria-controls="mobileNav">
           <span></span><span></span>
@@ -3394,6 +3400,7 @@ const I18N = {
         const t = I18N[currentLang];
         const count = cartCount();
         cartCountEl.textContent = String(count);
+        cartCountEl.hidden = count === 0;
         const itemWord = count === 1 ? t["cart.aria.item"] : t["cart.aria.items"];
         cartButton.setAttribute("aria-label", t["cart.aria.cart"] + ", " + count + " " + itemWord);
 
