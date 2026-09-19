@@ -542,8 +542,15 @@
         max-width: 1440px;
         margin: 0 auto;
         display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        gap: 40px;
+        /* Content-sized columns, not an even 1fr/1fr split: the text block
+ and the cube each fell short of half the grid width, so the two blocks
+ read as pinned to opposite edges with a dead gap between them instead
+ of one composition. Sizing each column to what it actually needs and
+ centering the pair as a unit closes that gap on every width from 1024
+ to 1920 without the cube ever crowding the copy. */
+        grid-template-columns: minmax(0, 500px) minmax(0, 560px);
+        justify-content: center;
+        gap: 60px;
         align-items: center;
       }
       .hero h1 {
