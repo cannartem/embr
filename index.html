@@ -823,6 +823,15 @@
         margin: 0;
         color: var(--ink);
       }
+      /* small --ink accent under the section's own title - same reasoning as the flagship photo frame above */
+      .ritual-head h2::after {
+        content: "";
+        display: block;
+        width: 72px;
+        height: 6px;
+        background: var(--ink);
+        margin-top: 16px;
+      }
       .ritual-lede {
         font-size: 15px;
         line-height: 1.7;
@@ -907,6 +916,9 @@
         flex: 1 1 240px;
         min-height: 240px;
         overflow: hidden;
+        /* --ink frame: brings back the brand's dark-blue back without reverting the section itself to dark - a callback to the nav bar, not a repaint of the whole card */
+        border: 10px solid var(--ink);
+        box-sizing: border-box;
       }
       .p-flagship-photo img {
         width: 100%;
