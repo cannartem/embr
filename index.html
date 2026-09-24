@@ -823,15 +823,6 @@
         margin: 0;
         color: var(--ink);
       }
-      /* small --ink accent under the section's own title - same reasoning as the flagship photo frame above */
-      .ritual-head h2::after {
-        content: "";
-        display: block;
-        width: 72px;
-        height: 6px;
-        background: var(--ink);
-        margin-top: 16px;
-      }
       .ritual-lede {
         font-size: 15px;
         line-height: 1.7;
@@ -916,9 +907,6 @@
         flex: 1 1 240px;
         min-height: 240px;
         overflow: hidden;
-        /* --ink frame: brings back the brand's dark-blue back without reverting the section itself to dark - a callback to the nav bar, not a repaint of the whole card */
-        border: 10px solid var(--ink);
-        box-sizing: border-box;
       }
       .p-flagship-photo img {
         width: 100%;
@@ -1230,9 +1218,9 @@
 
       /* ---------- PROOF (the flip from cream to ink IS the transition). The three facts are a real source-to-door sequence, drawn as a timeline */
       /* Proof does what hero does - the background itself is the colour, a real palette sweep, not a dark canvas with a glow behind the text */
-      /* one flat colour like hero; plum-deep reads calm/trustworthy for lab data and differs from hero's red without fighting it */
+      /* one flat colour like hero; ink is the brand blue and differs from hero's red without fighting it */
       .proof {
-        background: var(--plum-deep);
+        background: var(--ink);
         color: var(--cream-on-plum);
         padding: 150px max(40px, (100% - var(--measure)) / 2) 130px;
         position: relative;
@@ -1574,6 +1562,10 @@
         line-height: 0.95;
         color: var(--accent-deep);
         font-variant-numeric: tabular-nums;
+      }
+      /* Machine's own dash glyph is near-invisible at this size; borrow the fallback sans for just the dash */
+      .num-dash {
+        font-family: Impact, Helvetica, sans-serif;
       }
       .faq-flag .faq-stat-num {
         font-size: clamp(60px, 7vw, 104px);
@@ -2446,7 +2438,7 @@
         <div class="faq-tile" style="--accent: var(--ember); --accent-deep: var(--ember-deep)">
           <div class="faq-stat">
             <span class="faq-stat-label" data-i18n="faq.speed.label">Time to feel it</span>
-            <span class="faq-stat-num display">10&ndash;20</span>
+            <span class="faq-stat-num display">10<span class="num-dash">&ndash;</span>20</span>
             <span class="faq-stat-unit" data-i18n="faq.speed.unit">min, sublingual</span>
           </div>
           <div class="faq-body">
@@ -2462,7 +2454,7 @@
         <div class="faq-tile" style="--accent: var(--red); --accent-deep: var(--red-deep)">
           <div class="faq-stat">
             <span class="faq-stat-label" data-i18n="faq.dose.label">Starting dose</span>
-            <span class="faq-stat-num display">5</span>
+            <span class="faq-stat-num display">3</span>
             <span class="faq-stat-unit" data-i18n="faq.dose.unit">drops or 1 spray</span>
           </div>
           <div class="faq-body">
