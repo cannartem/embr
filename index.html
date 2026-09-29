@@ -172,10 +172,10 @@
         padding: 20px 40px;
         border-bottom: 1px solid var(--line);
       }
-      /* align-items:center centers each child's own box height, not its text baseline - a 26px word and an 11px tag land on different visual lines. baseline fixes that. */
+      /* flex-end, not baseline - Machine's own baseline metric sits higher than its visual cap-bottom, so align-items:baseline still left CBD looking raised. flex-end is pure box geometry, immune to font metrics. */
       .wordmark {
         display: flex;
-        align-items: baseline;
+        align-items: flex-end;
         gap: 8px;
       }
       .wm-word {
