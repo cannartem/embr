@@ -172,13 +172,8 @@
         padding: 20px 40px;
         border-bottom: 1px solid var(--line);
       }
-      /* flex-end, not baseline - Machine's own baseline metric sits higher than its visual cap-bottom, so align-items:baseline still left CBD looking raised. flex-end is pure box geometry, immune to font metrics. */
+      /* one font, one size, one line of text - every earlier alignment bug came from stitching two differently-sized elements back together. plain text flow has nothing to misalign. */
       .wordmark {
-        display: flex;
-        align-items: flex-end;
-        gap: 8px;
-      }
-      .wm-word {
         font-family: var(--font-display);
         font-weight: 700;
         font-size: 26px;
@@ -186,10 +181,6 @@
         color: var(--cream);
       }
       .wm-tag {
-        font-size: 11px;
-        line-height: 1;
-        font-weight: 700;
-        letter-spacing: 0.06em;
         color: var(--red);
       }
       .navlinks {
@@ -1884,16 +1875,138 @@
           padding-bottom: 80px;
         }
       }
+
+      /* age gate: blocks the page until confirmed 18+, required for CBD sales in France - remembered in localStorage so it's a one-time check per browser */
+      .age-gate {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: var(--ink);
+        color: var(--cream);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+        text-align: center;
+      }
+      .age-gate[hidden] {
+        display: none;
+      }
+      .age-gate-box {
+        max-width: 380px;
+      }
+      .age-gate-box p {
+        font-size: 14px;
+        line-height: 1.6;
+        margin: 0 0 24px;
+        opacity: 0.85;
+      }
+      .age-gate-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+      }
+      .age-gate-actions button {
+        font: inherit;
+        font-weight: 700;
+        font-size: 13px;
+        letter-spacing: 0.03em;
+        padding: 12px 20px;
+        border-radius: 2px;
+        cursor: pointer;
+        border: 1px solid var(--cream);
+      }
+      .age-gate-enter {
+        background: var(--cream);
+        color: var(--ink);
+      }
+      .age-gate-leave {
+        background: transparent;
+        color: var(--cream);
+      }
+
+      /* cookie banner: equal-weight accept/refuse per CNIL guidance, no dark pattern */
+      .cookie-banner {
+        position: fixed;
+        left: 20px;
+        right: 20px;
+        bottom: 20px;
+        z-index: 9998;
+        max-width: 460px;
+        background: var(--cream);
+        color: var(--ink);
+        border: 1px solid var(--ink-line);
+        border-radius: 4px;
+        padding: 18px 20px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+      }
+      .cookie-banner[hidden] {
+        display: none;
+      }
+      .cookie-banner p {
+        font-size: 13px;
+        line-height: 1.6;
+        margin: 0 0 14px;
+      }
+      .cookie-banner a {
+        color: var(--ink);
+        text-decoration: underline;
+      }
+      .cookie-actions {
+        display: flex;
+        gap: 10px;
+      }
+      .cookie-actions button {
+        flex: 1;
+        font: inherit;
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: 0.03em;
+        padding: 10px 12px;
+        border-radius: 2px;
+        cursor: pointer;
+      }
+      .cookie-accept {
+        background: var(--ink);
+        color: var(--cream);
+        border: 1px solid var(--ink);
+      }
+      .cookie-refuse {
+        background: transparent;
+        color: var(--ink);
+        border: 1px solid var(--ink-line);
+      }
     </style>
   </head>
   <body>
     <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
 
-    <nav>
-      <div class="wordmark">
-        <span class="wm-word">EMBR</span>
-        <span class="wm-tag">CBD</span>
+    <div class="age-gate" id="ageGate" hidden>
+      <div class="age-gate-box">
+        <p>
+          EMBR sells CBD products. You must be 18 or older to enter this site.<br />
+          EMBR vend des produits à base de CBD. Vous devez avoir 18 ans ou plus pour entrer.
+        </p>
+        <div class="age-gate-actions">
+          <button class="age-gate-enter" id="ageGateEnter" type="button">I'm 18+ / J'ai 18 ans+</button>
+          <button class="age-gate-leave" id="ageGateLeave" type="button">Leave / Quitter</button>
+        </div>
       </div>
+    </div>
+
+    <div class="cookie-banner" id="cookieBanner" hidden>
+      <p>
+        We use essential local storage for language and cart. Nothing else is set without your
+        consent. See our <a href="confidentialite.html">privacy policy</a>.
+      </p>
+      <div class="cookie-actions">
+        <button class="cookie-accept" id="cookieAccept" type="button">Accept</button>
+        <button class="cookie-refuse" id="cookieRefuse" type="button">Refuse</button>
+      </div>
+    </div>
+
+    <nav>
+      <div class="wordmark">EMBR <span class="wm-tag">CBD</span></div>
       <div class="navlinks">
         <a href="#ritual" data-i18n="nav.shop">Shop</a>
         <a href="#process" data-i18n="nav.process">Process</a>
@@ -2528,6 +2641,9 @@
         <a href="https://www.instagram.com/embr.eu/" target="_blank" rel="noopener" data-i18n="footer.instagram">Instagram</a>
         <a href="#faq" data-i18n="nav.journal">Journal</a>
         <a href="#cta" data-i18n="nav.contact">Contact</a>
+        <a href="mentions-legales.html">Legal Notice</a>
+        <a href="cgv.html">Terms</a>
+        <a href="confidentialite.html">Privacy</a>
       </div>
     </footer>
 
@@ -3647,6 +3763,35 @@ const I18N = {
       // the chance to register itself - this is what actually paints the
       // detected/stored language on first load.
       applyLanguage(initialLang);
+
+      // age gate - blocks the page (via CSS, not removed from DOM) until confirmed 18+, remembered per browser
+      const ageGate = document.getElementById("ageGate");
+      if (localStorage.getItem("embr-age-ok") !== "1") {
+        ageGate.hidden = false;
+        document.body.style.overflow = "hidden";
+      }
+      document.getElementById("ageGateEnter").addEventListener("click", () => {
+        localStorage.setItem("embr-age-ok", "1");
+        ageGate.hidden = true;
+        document.body.style.overflow = "";
+      });
+      document.getElementById("ageGateLeave").addEventListener("click", () => {
+        location.href = "https://www.google.com";
+      });
+
+      // cookie banner - equal-weight accept/refuse, shown once per choice, no trackers are set either way today
+      const cookieBanner = document.getElementById("cookieBanner");
+      if (!localStorage.getItem("embr-cookie-consent")) {
+        cookieBanner.hidden = false;
+      }
+      document.getElementById("cookieAccept").addEventListener("click", () => {
+        localStorage.setItem("embr-cookie-consent", "accepted");
+        cookieBanner.hidden = true;
+      });
+      document.getElementById("cookieRefuse").addEventListener("click", () => {
+        localStorage.setItem("embr-cookie-consent", "refused");
+        cookieBanner.hidden = true;
+      });
     </script>
 
     <!-- Photo credits (Unsplash License, free for commercial use): Roll (cube face only): Elsa Olofsson - unsplash.com/photos/brown-cigarette-stick-on-blue-surface-Et2GCPYzze4. Everything else (Drops, Mist, Roll row/card, Balm, Chew, Bath): AI-generated renders, client-commissioned, no external credit. -->
