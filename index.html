@@ -172,12 +172,23 @@
         padding: 20px 40px;
         border-bottom: 1px solid var(--line);
       }
+      /* align-items:center centers each child's own box height, not its text baseline - a 26px word and an 11px tag land on different visual lines. baseline fixes that. */
       .wordmark {
-        font-size: 22px;
-        letter-spacing: 0.02em;
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+      }
+      .wm-word {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 26px;
+        letter-spacing: 0.03em;
         color: var(--cream);
       }
-      .wordmark b {
+      .wm-tag {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
         color: var(--red);
       }
       .navlinks {
@@ -1878,7 +1889,10 @@
     <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
 
     <nav>
-      <div class="wordmark">EM<b>B</b>R</div>
+      <div class="wordmark">
+        <span class="wm-word">EMBR</span>
+        <span class="wm-tag">CBD</span>
+      </div>
       <div class="navlinks">
         <a href="#ritual" data-i18n="nav.shop">Shop</a>
         <a href="#process" data-i18n="nav.process">Process</a>
